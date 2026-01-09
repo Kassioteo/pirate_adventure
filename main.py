@@ -152,8 +152,6 @@ def animete_pirate_idle():
         pirate.image = pirate_idle[pirate_idle_frame]
 
 
-clock.schedule_interval(animete_pirate_idle, 0.1)
-
 # run
 pirate_run_frame = 0
 
@@ -166,9 +164,6 @@ def animete_pirate_run():
     elif pirate.vy == 0 and pirate.vx < 0:
         pirate_run_frame = (pirate_run_frame + 1) % len(pirate_run_left)
         pirate.image = pirate_run_left[pirate_run_frame]
-
-
-clock.schedule_interval(animete_pirate_run, 0.1)
 
 
 # inimigos
@@ -186,8 +181,6 @@ def animete_shell_atack():
         shell_0.image = shell_atack[shell_atack_frame]
 
 
-clock.schedule_interval(animete_shell_atack, 0.1)
-
 # crabby
 crabby_run_frame = 0
 
@@ -196,9 +189,6 @@ def animete_crabby_run():
     global crabby_run_frame
     crabby_run_frame = (crabby_run_frame + 1) % len(crabby_run)
     crabby_0.image = crabby_run[crabby_run_frame]
-
-
-clock.schedule_interval(animete_crabby_run, 0.1)
 
 
 # cannon_fire
@@ -221,9 +211,6 @@ def fire_cannon_fire():
     clock.schedule_interval(animete_cannon_fire, 0.1)
 
 
-clock.schedule_interval(fire_cannon_fire, 5.0)
-
-
 # key_idle
 key_frame = 0
 
@@ -233,8 +220,6 @@ def animete_key():
     key_frame = (key_frame + 1) % len(key_idle)
     key_chest.image = key_idle[key_frame]
 
-
-clock.schedule_interval(animete_key, 0.1)
 
 # movimentacao de inimigos
 
@@ -254,6 +239,23 @@ def ball_walk():
     if cannon_fire_frame == len(cannon_fire) - 3:
         ball_0.pos = WIDTH - 200, HEIGHT - 190
 
+# iniciando animacoes
+def start_all_clock():
+    clock.schedule_interval(animete_pirate_idle, 0.1)
+    clock.schedule_interval(animete_pirate_run, 0.1)
+    clock.schedule_interval(animete_shell_atack, 0.1)
+    clock.schedule_interval(animete_crabby_run, 0.1)
+    clock.schedule_interval(fire_cannon_fire, 4.0)
+    clock.schedule_interval(animete_key, 0.1)
+
+# parando animacoes
+def stop_all_clocks():
+    clock.unschedule(fire_cannon_fire)
+    clock.unschedule(animete_pirate_idle)
+    clock.unschedule(animete_pirate_run)
+    clock.unschedule(animete_shell_atack)
+    clock.unschedule(animete_crabby_run)
+    clock.unschedule(animete_key)
 
 key_state = False
 game_state = "MENU"
@@ -274,31 +276,32 @@ def on_mouse_down(pos):
     if game_state == "MENU":
         if botao_play.collidepoint(pos):
             print("O jogo começou!")
-            game_state = "JOGANDO"
+            stop_all_clocks()
             key_state = False
-
-    elif game_state == "FINAL":
-        if botao_return.collidepoint(pos):
-            print("VOLTANDO!")
-            game_state = "MENU"
+            start_all_clock()
+            game_state = "JOGANDO"
+        elif botao_music.collidepoint(pos):
+            if music_state:
+                music.pause()  # Pausa a música
+                # botao_music.image = 'som_off' # Muda a imagem do botão
+                music_state = False
+            else:
+                music.unpause()  # Volta a tocar de onde parou
+                # botao_music.image = 'som_on'
+                music_state = True
+        elif botao_exit_game.collidepoint(pos):
+            sys.exit()
 
     elif game_state == "JOGANDO":
         if botao_exit.collidepoint(pos):
             print("SAINDO!")
             game_state = "MENU"
 
-    if botao_music.collidepoint(pos):
-        if music_state:
-            music.pause()  # Pausa a música
-            # botao_music.image = 'som_off' # Muda a imagem do botão
-            music_state = False
-        else:
-            music.unpause()  # Volta a tocar de onde parou
-            # botao_music.image = 'som_on'
-            music_state = True
-
-    if botao_exit_game.collidepoint(pos):
-        sys.exit()
+    elif game_state == "FINAL":
+        if botao_return.collidepoint(pos):
+            
+            print("VOLTANDO!")
+            game_state = "MENU"
 
 
 music.play("trilha_sonora.wav")
