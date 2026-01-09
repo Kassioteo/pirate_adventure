@@ -17,6 +17,9 @@ pirate.vx = 0
 bau = Actor("chest_idle")
 bau.pos = WIDTH - 900, HEIGHT - 415
 
+# craindo chave do tesouro
+key_chest = Actor("key_0")
+key_chest.pos = WIDTH - 150, HEIGHT - 190
 
 # criando inimigos
 list_inimigos = []
@@ -129,6 +132,7 @@ pirate_run_right = set_animation_list("pirate_run_right", 5)
 shell_atack = set_animation_list("shell_atack", 6)
 crabby_run = set_animation_list("crabby_run", 6)
 cannon_fire = set_animation_list("cannon_fire", 6)
+key_idle = set_animation_list("key", 8)
 
 # animacoes
 
@@ -220,6 +224,18 @@ def fire_cannon_fire():
 clock.schedule_interval(fire_cannon_fire, 5.0)
 
 
+# key_idle
+key_frame = 0
+
+
+def animete_key():
+    global key_frame
+    key_frame = (key_frame + 1) % len(key_idle)
+    key_chest.image = key_idle[key_frame]
+
+
+clock.schedule_interval(animete_key, 0.1)
+
 # movimentacao de inimigos
 
 
@@ -239,6 +255,7 @@ def ball_walk():
         ball_0.pos = WIDTH - 200, HEIGHT - 190
 
 
+key_state = False
 game_state = "MENU"
 music_state = True
 
@@ -252,11 +269,13 @@ botao_return = Actor("botao_play", (450, 350))
 def on_mouse_down(pos):
     global music_state
     global game_state
+    global key_state
 
     if game_state == "MENU":
         if botao_play.collidepoint(pos):
             print("O jogo começou!")
             game_state = "JOGANDO"
+            key_state = False
 
     elif game_state == "FINAL":
         if botao_return.collidepoint(pos):
@@ -309,6 +328,9 @@ def draw():
 
         pirate.draw()
 
+        if not key_state:
+            key_chest.draw()
+
         bau.draw()
 
         shell_0.draw()
@@ -326,6 +348,7 @@ def draw():
 
 def update():
     global game_state
+    global key_state
 
     crabby_walk()
     ball_walk()
@@ -366,11 +389,17 @@ def update():
     for enemy in list_inimigos:
         if pirate.colliderect(enemy):
             pirate.pos = POSICAO_INICIAL
+            key_state = False
             break
+
+    #  colisao key
+    if pirate.colliderect(key_chest):
+        key_state = True
 
     #  colisao bau
     if pirate.colliderect(bau):
-        game_state = "FINAL"
+        if key_state:
+            game_state = "FINAL"
 
     # colisao fim do mapa horizontal
     if pirate.left < 0:
