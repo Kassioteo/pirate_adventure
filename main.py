@@ -1,3 +1,5 @@
+import sys
+
 # horizontal
 WIDTH = 64 * 15
 # vertical
@@ -10,6 +12,10 @@ pirate = Actor("pirate_idle_0")
 pirate.pos = POSICAO_INICIAL
 pirate.vy = 0
 pirate.vx = 0
+
+# criando bau do tesouro
+bau = Actor("chest_idle")
+bau.pos = WIDTH - 900, HEIGHT - 415
 
 
 # criando inimigos
@@ -202,9 +208,6 @@ def animete_cannon_fire():
     cannon_fire_frame = (cannon_fire_frame + 1) % len(cannon_fire)
     cannon_fire_0.image = cannon_fire[cannon_fire_frame]
 
-    # if cannon_fire_frame == len(cannon_fire) - 2:
-    #     ball_0.pos = WIDTH - 200, HEIGHT - 190
-
     if cannon_fire_frame == len(cannon_fire) - 1:
         clock.unschedule(animete_cannon_fire)
         cannon_fire_frame = 0
@@ -236,22 +239,93 @@ def ball_walk():
         ball_0.pos = WIDTH - 200, HEIGHT - 190
 
 
+game_state = "MENU"
+music_state = True
+
+botao_play = Actor("botao_play", (450, 400))
+botao_exit = Actor("button_exit", (940, 20))
+botao_music = Actor("button_exit", (40, 20))
+botao_exit_game = Actor("botao_play", (450, 450))
+botao_return = Actor("botao_play", (450, 350))
+
+
+def on_mouse_down(pos):
+    global music_state
+    global game_state
+
+    if game_state == "MENU":
+        if botao_play.collidepoint(pos):
+            print("O jogo começou!")
+            game_state = "JOGANDO"
+
+    elif game_state == "FINAL":
+        if botao_return.collidepoint(pos):
+            print("VOLTANDO!")
+            game_state = "MENU"
+
+    elif game_state == "JOGANDO":
+        if botao_exit.collidepoint(pos):
+            print("SAINDO!")
+            game_state = "MENU"
+
+    if botao_music.collidepoint(pos):
+        if music_state:
+            music.pause()  # Pausa a música
+            # botao_music.image = 'som_off' # Muda a imagem do botão
+            music_state = False
+        else:
+            music.unpause()  # Volta a tocar de onde parou
+            # botao_music.image = 'som_on'
+            music_state = True
+
+    if botao_exit_game.collidepoint(pos):
+        sys.exit()
+
+
+music.play("trilha_sonora.wav")
+
+
 def draw():
-    screen.clear()
-    screen.fill("skyblue")
-    plataforma_00.draw()
-    plataforma_01.draw()
-    plataforma_20.draw()
-    plataforma_21.draw()
-    plataforma_10.draw()
-    pirate.draw()
-    shell_0.draw()
-    crabby_0.draw()
-    ball_0.draw()
-    cannon_fire_0.draw()
+    if game_state == "MENU":
+        screen.fill((30, 30, 30))  # Fundo escuro para o menu
+        screen.draw.text(
+            "MEU SUPER JOGO", center=(450, 150), fontsize=60, color="white"
+        )
+        botao_play.draw()
+        botao_music.draw()
+        botao_exit_game.draw()
+
+    elif game_state == "JOGANDO":
+        screen.clear()
+        screen.fill("skyblue")
+
+        botao_exit.draw()
+
+        plataforma_00.draw()
+        plataforma_01.draw()
+        plataforma_20.draw()
+        plataforma_21.draw()
+        plataforma_10.draw()
+
+        pirate.draw()
+
+        bau.draw()
+
+        shell_0.draw()
+        crabby_0.draw()
+        ball_0.draw()
+        cannon_fire_0.draw()
+
+    elif game_state == "FINAL":
+        screen.fill((30, 30, 30))  # Fundo escuro para o menu
+        screen.draw.text(
+            "PARABENS VC GANHOU!!!", center=(450, 150), fontsize=60, color="white"
+        )
+        botao_return.draw()
 
 
 def update():
+    global game_state
 
     crabby_walk()
     ball_walk()
@@ -293,6 +367,10 @@ def update():
         if pirate.colliderect(enemy):
             pirate.pos = POSICAO_INICIAL
             break
+
+    #  colisao bau
+    if pirate.colliderect(bau):
+        game_state = "FINAL"
 
     # colisao fim do mapa horizontal
     if pirate.left < 0:
