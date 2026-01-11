@@ -31,7 +31,7 @@ class Shell(Enemie):
 class Crabby(Enemie):
     def __init__(self):
         super().__init__(
-            "crabby_run_0", "crabby_run", 6, (64 * 15 - 720, 64 * 10 - 410), 0, 3
+            "crabby_run_0", "crabby_run", 6, (64 * 15 - 740, 64 * 10 - 420), 0, 3
         )
 
     def animete_crabby_run(self):
@@ -46,9 +46,9 @@ class Crabby(Enemie):
 
 class Ball(Enemie):
     def __init__(self):
-        super().__init__("ball_idle", "", 0, (64 * 15 - 225, 64 * 10 - 170), 0, 3)
+        super().__init__("ball_idle", "", 0, (64 * 15 - 225, 64 * 10 - 172), 0, 3)
 
     def ball_walk(self, cannon_frame_index, cannon_animation):
         self.actor.x = self.actor.x - self.vx
         if cannon_frame_index == len(cannon_animation) - 3:
-            self.actor.pos = 64 * 15 - 225, 64 * 10 - 170
+            self.actor.pos = 64 * 15 - 225, 64 * 10 - 172

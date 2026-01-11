@@ -11,7 +11,7 @@ class Platform:
 
 class Cannon_fire(Platform):
     def __init__(self):
-        super().__init__("cannon_fire_idle", (64 * 15 - 210, 64 * 10 - 170))
+        super().__init__("cannon_fire_idle", (64 * 15 - 210, 64 * 10 - 172))
         self.frame_index = 0
         animation = set_animation_list("cannon_fire", 6)
         self.animation = animation

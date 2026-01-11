@@ -67,18 +67,14 @@ class Pirate(Character):
         return platform_under, platform_over
 
     def start_physic_vertical_pirate_y(self, list_platforms):
-        # gravidade
         self.vy = self.vy + 0.5
         self.actor.y = self.actor.y + self.vy
 
-        # queda
         if self.actor.y > 64 * 10:
             self.actor.pos = self.init_pos
 
-        # vertical colision
         platform_under, platform_over = self.vertical_collision_y(list_platforms)
 
-        # saldo
         if keyboard.space:
             if platform_under:
                 self.vy = -13
@@ -86,7 +82,6 @@ class Pirate(Character):
         return platform_under, platform_over
 
     def start_physic_horizontal_pirate_x(self, list_platforms):
-        # movimento horizontal
         self.vx = 0
 
         if keyboard.left:
@@ -96,13 +91,11 @@ class Pirate(Character):
 
         self.actor.x = self.actor.x + self.vx
 
-        # colisao fim do mapa
         if self.actor.left < 0:
             self.actor.left = 0
         if self.actor.right > 64 * 15:
             self.actor.right = 64 * 15
 
-        # colisao horizontal
         platform_left, platform_right = self.horizontal_collision_x(list_platforms)
 
         return platform_left, platform_right

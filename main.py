@@ -27,7 +27,7 @@ TITLE = engine.title
 pirate = Pirate()
 
 # chest
-chest = Character("chest_idle", (WIDTH - 900, HEIGHT - 415))
+chest = Character("chest_idle", (WIDTH - 900, HEIGHT - 420))
 
 # key
 key = Key()
@@ -60,8 +60,6 @@ platforms_list = [
     platform_4,
     cannon_fire,
 ]
-
-# ANIMATIONS
 
 
 def on_mouse_down(pos):
