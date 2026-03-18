@@ -7,5 +7,6 @@ em jogo simples de plataforma desenvolvido com pgZero
 source venv/bin/activate
 
 - pip install -r requirements.txt
+test
 
 - pgzrun main.py
